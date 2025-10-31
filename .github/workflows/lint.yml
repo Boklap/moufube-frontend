@@ -2,14 +2,29 @@ name: Lint Code
 
 run-name: "Lint code on branch ${{ github.ref_name }} by @${{ github.actor }} (trigger: ${{ github.event_name == 'push' && 'Push' || github.event_name == 'pull_request' && 'Pull Request' || github.event_name }})"
 
-on: [push, pull_request]
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - development
+      - testing
+      - main
 
 jobs:
   lint:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/boklap/moufube-frontend-dev-image:1.0.0
     steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
       - name: Checkout code
         uses: actions/checkout@v5
 
@@ -18,6 +33,19 @@ jobs:
 
       - name: Check code formatting with prettier
         run: npm run format:check
+        continue-on-error: false
 
       - name: Lint code with ESLint
         run: npm run lint
+        continue-on-error: false
+
+      - name: Success message
+        if: success()
+        run: echo "✅ All lint checks passed!"
+
+      - name: Failure message
+        if: failure()
+        run: |
+          echo "❌ Lint checks failed!"
+          echo "Please fix the errors and push again."
+          echo "Run 'npm run lint' and 'npm run format' locally to fix issues."
