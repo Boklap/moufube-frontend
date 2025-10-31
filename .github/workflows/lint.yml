@@ -19,18 +19,13 @@ on:
 
 jobs:
   lint:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/boklap/moufube-frontend-dev-image:1.0.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_PAT }}
     steps:
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
-
       - name: Checkout code
         uses: actions/checkout@v5
 
