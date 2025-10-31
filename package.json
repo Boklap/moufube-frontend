@@ -8,15 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "eslint --max-warnings 0 ."
-    ]
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "next": "15.5.4",
