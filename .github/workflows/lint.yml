@@ -1,0 +1,23 @@
+name: Lint Code
+
+run-name: "Lint code on branch ${{ github.ref_name }} by @${{ github.actor }} (trigger: ${{ github.event_name == 'push' && 'Push' || github.event_name == 'pull_request' && 'Pull Request' || github.event_name }})"
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/boklap/moufube-frontend-dev-image:1.0.0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install dependency
+        run: npm ci
+
+      - name: Check code formatting with prettier
+        run: npm run format:check
+
+      - name: Lint code with ESLint
+        run: npm run lint
