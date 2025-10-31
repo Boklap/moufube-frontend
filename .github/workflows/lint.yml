@@ -3,6 +3,12 @@ name: Lint Code
 run-name: "Lint code on branch ${{ github.ref_name }} by @${{ github.actor }} (trigger: ${{ github.event_name == 'push' && 'Push' || github.event_name == 'pull_request' && 'Pull Request' || github.event_name }})"
 
 on:
+  push:
+    branches:
+      - development
+      - testing
+      - main
+
   pull_request:
     types:
       - closed
